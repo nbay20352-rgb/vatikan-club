@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Carte — Le Vatikan Night Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08080b;
+      --surface: #121218;
+      --surface-2: #191922;
+      --border: #272734;
+      --gold: #f59e0b;
+      --gold-2: #fbbf24;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --green: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 105px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(8, 8, 11, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 9px;
+    }
+
+    .page-title {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--gold-2);
+    }
+
+    .table-badge {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: var(--gold-2);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 22px auto 0;
+      padding: 0 18px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 18px;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--gold);
+      color: #09090c;
+      border-color: var(--gold);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .card-cat {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--gold-2);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 11px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .price {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold-2);
+    }
+
+    .qty-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .qty-btn.plus {
+      background: var(--gold);
+      color: #09090c;
+      border-color: var(--gold);
+    }
+
+    .qty-num {
+      min-width: 18px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .checkout-card {
+      margin-top: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .cart-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      background: rgba(14, 14, 20, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 12px 18px;
+    }
+
+    .cart-bar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cart-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cart-total {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--gold-2);
+    }
+
+    .wa-btn {
+      background: var(--green);
+      color: #05160b;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .wa-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-wrap">
+      <a href="index.html" class="back-link" id="back-home">← Accueil</a>
+      <div class="page-title">Carte — Le Vatikan</div>
+      <span class="table-badge" id="header-table">Table : Libre</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+
+    <section class="checkout-card">
+      <h2>Infos de commande</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="customer-name">Prénom ou surnom</label>
+          <input type="text" id="customer-name" placeholder="Ex. Boss, Junior, Nadia..." />
+        </div>
+        <div class="field">
+          <label for="table-input">Repère table / carré VIP</label>
+          <input type="text" id="table-input" placeholder="Ex. VIP-01 ou Table 4" />
+        </div>
+        <div class="field">
+          <label for="payment-method">Mode de règlement</label>
+          <select id="payment-method">
+            <option value="Espèces sur place">Espèces sur place</option>
+            <option value="MTN MoMo">MTN MoMo</option>
+            <option value="Orange Money">Orange Money</option>
+          </select>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="cart-bar">
+    <div class="cart-bar-inner">
+      <div>
+        <div class="cart-label" id="cart-count">0 article sélectionné</div>
+        <div class="cart-total" id="cart-total">0 FCFA</div>
+      </div>
+      <button type="button" class="wa-btn" id="send-wa" disabled>Commander sur WhatsApp</button>
+    </div>
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = "237688609622";
+
+    const menuData = [
+      { id: 1, name: "Poulet Braisé Entier", cat: "Braise & Grillades", price: 6500, icon: "🍗", desc: "Braisé à la flamme, marinade maison et accompagnement." },
+      { id: 2, name: "Poisson Braisé", cat: "Braise & Grillades", price: 6000, icon: "🐟", desc: "Bien relevé et grillé à point pour vos soirées." },
+      { id: 3, name: "Brochettes de Bœuf (x5)", cat: "Braise & Grillades", price: 3500, icon: "🥩", desc: "Tendres et grillées au charbon avec épices." },
+      { id: 4, name: "Alloco / Plantain Braisé", cat: "Braise & Grillades", price: 1500, icon: "🍌", desc: "Part à partager à table ou au carré VIP." },
+      { id: 5, name: "Seau de Bières (6 unités)", cat: "Bières & Seaux", price: 6000, icon: "🍻", desc: "Bières bien fraîches servies dans leur seau." },
+      { id: 6, name: "Bière Fraîche", cat: "Bières & Seaux", price: 1000, icon: "🍺", desc: "Service rapide à table ou au comptoir." },
+      { id: 7, name: "Bouteille Whisky / Spiritueux", cat: "Bouteilles VIP", price: 25000, icon: "🥃", desc: "Format idéal pour les tables VIP et célébrations." },
+      { id: 8, name: "Chicha", cat: "Lounge & Chicha", price: 5000, icon: "💨", desc: "Préparée sur demande pour votre espace." }
+    ];
+
+    const categories = ["Tout", "Braise & Grillades", "Bières & Seaux", "Bouteilles VIP", "Lounge & Chicha"];
+    let selectedCategory = "Tout";
+    const cart = {};
+
+    const tableInput = document.getElementById("table-input");
+    const headerTable = document.getElementById("header-table");
+    const backHome = document.getElementById("back-home");
+
+    const params = new URLSearchParams(window.location.search);
+    const qrTable = (params.get("table") || "").trim();
+    if (qrTable) {
+      tableInput.value = qrTable;
+      headerTable.textContent = `Table : ${qrTable}`;
+      backHome.href = `index.html?table=${encodeURIComponent(qrTable)}`;
+    }
+
+    tableInput.addEventListener("input", () => {
+      const val = tableInput.value.trim();
+      headerTable.textContent = val ? `Table : ${val}` : "Table : Libre";
+    });
+
+    function formatFCFA(num) {
+      return num.toLocaleString("fr-FR") + " FCFA";
+    }
+
+    function renderFilters() {
+      const el = document.getElementById("filters");
+      el.innerHTML = categories.map(cat => `
+        <button type="button" class="filter-btn ${cat === selectedCategory ? "active" : ""}" data-cat="${cat}">
+          ${cat}
+        </button>
+      `).join("");
+
+      el.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedCategory = btn.dataset.cat;
+          renderFilters();
+          renderMenu();
+        });
+      });
+    }
+
+    function updateQty(id, delta) {
+      const next = (cart[id] || 0) + delta;
+      if (next <= 0) {
+        delete cart[id];
+      } else {
+        cart[id] = next;
+      }
+      renderMenu();
+      updateCartBar();
+    }
+
+    function renderMenu() {
+      const el = document.getElementById("grid");
+      const items = selectedCategory === "Tout"
+        ? menuData
+        : menuData.filter(i => i.cat === selectedCategory);
+
+      el.innerHTML = items.map(item => {
+        const qty = cart[item.id] || 0;
+        return `
+          <article class="card">
+            <div>
+              <div class="card-top">
+                <div>
+                  <div class="card-cat">${item.cat}</div>
+                  <h3 class="card-title">${item.name}</h3>
+                </div>
+                <div class="card-icon">${item.icon}</div>
+              </div>
+              <p class="card-desc">${item.desc}</p>
+            </div>
+            <div class="card-foot">
+              <div class="price">${formatFCFA(item.price)}</div>
+              <div class="qty-box">
+                ${qty > 0 ? `<button type="button" class="qty-btn minus" data-id="${item.id}">-</button>` : ""}
+                ${qty > 0 ? `<span class="qty-num">${qty}</span>` : ""}
+                <button type="button" class="qty-btn plus" data-id="${item.id}">+</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      el.querySelectorAll(".plus").forEach(b => b.addEventListener("click", () => updateQty(Number(b.dataset.id), 1)));
+      el.querySelectorAll(".minus").forEach(b => b.addEventListener("click", () => updateQty(Number(b.dataset.id), -1)));
+    }
+
+    function updateCartBar() {
+      let count = 0;
+      let total = 0;
+      Object.entries(cart).forEach(([id, qty]) => {
+        const item = menuData.find(m => m.id === Number(id));
+        if (item) {
+          count += qty;
+          total += item.price * qty;
+        }
+      });
+
+      document.getElementById("cart-count").textContent =
+        count === 0 ? "0 article sélectionné" : `${count} article${count > 1 ? "s" : ""} sélectionné${count > 1 ? "s" : ""}`;
+      document.getElementById("cart-total").textContent = formatFCFA(total);
+      document.getElementById("send-wa").disabled = count === 0;
+    }
+
+    document.getElementById("send-wa").addEventListener("click", () => {
+      const lines = [];
+      let total = 0;
+
+      Object.entries(cart).forEach(([id, qty]) => {
+        const item = menuData.find(m => m.id === Number(id));
+        if (item) {
+          const sub = item.price * qty;
+          total += sub;
+          lines.push(`• ${qty}x ${item.name} — ${formatFCFA(sub)}`);
+        }
+      });
+
+      if (!lines.length) return;
+
+      const name = document.getElementById("customer-name").value.trim() || "Client";
+      const table = tableInput.value.trim() || "Non précisée";
+      const pay = document.getElementById("payment-method").value;
+      const ref = "VTK-" + Math.floor(1000 + Math.random() * 9000);
+
+      const text = [
+        "*NOUVELLE COMMANDE — LE VATIKAN NIGHT CLUB*",
+        `Référence : *${ref}*`,
+        `📍 Table / Espace : *${table}*`,
+        `👤 Client : *${name}*`,
+        `💳 Règlement : *${pay}*`,
+        "",
+        "*Détail de la commande :*",
+        ...lines,
+        "",
+        `*Total : ${formatFCFA(total)}*`
+      ].join("\n");
+
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank");
+    });
+
+    renderFilters();
+    renderMenu();
+    updateCartBar();
+  </script>
+</body>
+</html>
